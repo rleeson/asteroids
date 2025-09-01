@@ -4,14 +4,18 @@ import pygame
 from constants import * 
 from player import Player
 
-def game_loop(screen, dt, player):
+def game_loop(screen, dt, drawable, updatable):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return 0
     
     screen.fill("black")
-    player.update(dt)
-    player.draw(screen)
+
+    for entity in updatable:
+        entity.update(dt)
+
+    for entity in drawable:
+        entity.draw(screen)
 
     pygame.display.flip()
 
@@ -21,11 +25,18 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
     clock = pygame.time.Clock()
+
+    drawable = pygame.sprite.Group()
+    updatable = pygame.sprite.Group()
+
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     dt = 0
 
+    drawable.add(player)
+    updatable.add(player)
+
     while True:
-        game_state = game_loop(screen, dt, player)
+        game_state = game_loop(screen, dt, drawable, updatable)
         dt = clock.tick(60) / 1000
 
         if game_state == 0:
