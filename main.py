@@ -8,11 +8,10 @@ def game_loop(screen, dt, drawable, updatable):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return 0
+
+    updatable.update(dt)
     
     screen.fill("black")
-
-    for entity in updatable:
-        entity.update(dt)
 
     for entity in drawable:
         entity.draw(screen)
@@ -29,11 +28,10 @@ def main():
     drawable = pygame.sprite.Group()
     updatable = pygame.sprite.Group()
 
+    Player.containers = (drawable, updatable)
+
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     dt = 0
-
-    drawable.add(player)
-    updatable.add(player)
 
     while True:
         game_state = game_loop(screen, dt, drawable, updatable)
